@@ -5,13 +5,16 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useSocket } from '@/context/SocketContext';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { useToast } from '@/components/ui/use-toast';
 
 const Index = () => {
   const [name, setName] = useState('');
   const [roomId, setRoomId] = useState('');
   const [activeTab, setActiveTab] = useState<'join' | 'create'>('join');
+  const [isJoining, setIsJoining] = useState(false);
   const { createRoom, joinRoom } = useSocket();
   const navigate = useNavigate();
+  const { toast } = useToast();
   
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
@@ -22,17 +25,41 @@ const Index = () => {
   };
   
   const handleCreateRoom = () => {
-    if (!name.trim()) return;
+    if (!name.trim()) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Please enter your name",
+      });
+      return;
+    }
     
     createRoom(name);
     navigate('/host');
   };
   
-  const handleJoinRoom = () => {
-    if (!name.trim() || !roomId.trim()) return;
+  const handleJoinRoom = async () => {
+    if (!name.trim() || !roomId.trim()) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Please enter your name and room code",
+      });
+      return;
+    }
     
-    joinRoom(roomId, name);
-    navigate(`/room/${roomId}`);
+    setIsJoining(true);
+    
+    try {
+      const success = await joinRoom(roomId, name);
+      if (success) {
+        navigate(`/room/${roomId}`);
+      }
+    } catch (error) {
+      console.error('Failed to join room:', error);
+    } finally {
+      setIsJoining(false);
+    }
   };
   
   return (
@@ -109,9 +136,9 @@ const Index = () => {
               <Button 
                 className="w-full bg-quiz-primary hover:bg-quiz-accent" 
                 onClick={activeTab === 'join' ? handleJoinRoom : handleCreateRoom}
-                disabled={!name.trim() || (activeTab === 'join' && !roomId.trim())}
+                disabled={(!name.trim() || (activeTab === 'join' && !roomId.trim())) || isJoining}
               >
-                {activeTab === 'join' ? 'Join Quiz' : 'Create Quiz'}
+                {isJoining ? 'Joining...' : activeTab === 'join' ? 'Join Quiz' : 'Create Quiz'}
               </Button>
             </CardFooter>
           </Card>

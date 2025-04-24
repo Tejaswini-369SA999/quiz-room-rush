@@ -2,6 +2,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { Room, Participant, QuestionResponse } from '@/types/quiz';
+import { toast } from "@/components/ui/use-toast";
 
 interface SocketContextType {
   socket: Socket | null;
@@ -9,7 +10,7 @@ interface SocketContextType {
   room: Room | null;
   participant: Participant | null;
   isHost: boolean;
-  joinRoom: (roomId: string, name: string) => void;
+  joinRoom: (roomId: string, name: string) => Promise<boolean>;
   createRoom: (name: string) => void;
   startQuiz: () => void;
   submitAnswer: (response: Omit<QuestionResponse, 'participantId'>) => void;
@@ -93,23 +94,34 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       localStorage.setItem('quiz_current_room', newRoom.id);
       storeRoom(newRoom);
       
+      toast({
+        title: "Room Created!",
+        description: `Room code: ${newRoom.id}`,
+      });
+      
       // In real app, would emit socket event here
     });
   };
   
   // Join an existing room
-  const joinRoom = (roomId: string, name: string) => {
-    import('@/utils/quiz-utils').then(({ generateUserId, getRoom, storeRoom }) => {
+  const joinRoom = async (roomId: string, name: string): Promise<boolean> => {
+    try {
+      const utils = await import('@/utils/quiz-utils');
       // Get room data
-      const roomData = getRoom(roomId);
+      const roomData = utils.getRoom(roomId);
       
       if (!roomData) {
-        console.error('Room not found');
-        return;
+        console.error('Room not found:', roomId);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Room not found. Please check the room code and try again.",
+        });
+        return false;
       }
       
       // Create participant
-      const userId = generateUserId();
+      const userId = utils.generateUserId();
       const newParticipant: Participant = {
         id: userId,
         name,
@@ -127,10 +139,24 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       // Store in localStorage
       localStorage.setItem('quiz_participant', JSON.stringify(newParticipant));
       localStorage.setItem('quiz_current_room', roomId);
-      storeRoom(roomData);
+      utils.storeRoom(roomData);
       
+      toast({
+        title: "Joined Room!",
+        description: `You've joined room: ${roomId}`,
+      });
+      
+      return true;
       // In real app, would emit join room event
-    });
+    } catch (error) {
+      console.error('Error joining room:', error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to join room. Please try again.",
+      });
+      return false;
+    }
   };
   
   // Start the quiz
