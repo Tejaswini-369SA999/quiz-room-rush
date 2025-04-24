@@ -1,73 +1,100 @@
-# Welcome to your Lovable project
 
-## Project info
+# Quiz Room Rush
 
-**URL**: https://lovable.dev/projects/5ae9b5f9-8116-455f-b395-701ca5f4ab37
+A real-time quiz application that allows hosts to create quiz rooms and participants to join via unique links. Built with React, TypeScript, and Socket.io.
 
-## How can I edit this code?
+## Features
 
-There are several ways of editing your application.
+- No sign-up required
+- Create quiz rooms and become the host
+- Share a unique room code or link for participants to join
+- Upload or paste questions in bulk (CSV/JSON format)
+- Multiple choice questions with difficulty levels
+- Timed quiz rounds (12 seconds per question)
+- Real-time leaderboard and scoring
+- Final results with statistics
 
-**Use Lovable**
+## Getting Started
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/5ae9b5f9-8116-455f-b395-701ca5f4ab37) and start prompting.
+### Prerequisites
 
-Changes made via Lovable will be committed automatically to this repo.
+- Node.js (v14+)
+- npm, yarn, or pnpm
 
-**Use your preferred IDE**
+### Installation
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+1. Clone the repository:
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+```bash
+git clone https://github.com/yourusername/quiz-room-rush.git
+cd quiz-room-rush
+```
 
-Follow these steps:
+2. Install dependencies:
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+```bash
+npm install
+```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+3. Start the development server:
 
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+4. Open your browser and navigate to:
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```
+http://localhost:8080
+```
 
-**Use GitHub Codespaces**
+### Project Structure
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+```
+├── src/
+│   ├── components/     # Reusable UI components
+│   ├── context/        # React context providers
+│   ├── pages/          # Application pages
+│   ├── types/          # TypeScript type definitions
+│   ├── utils/          # Utility functions
+│   ├── App.tsx         # Main application component
+│   └── main.tsx        # Application entry point
+```
 
-## What technologies are used for this project?
+## Usage
 
-This project is built with:
+1. **Create a Room**:
+   - Enter your name and click "Create Room"
+   - Share the room code or join link with participants
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+2. **Join a Room**:
+   - Enter your name and the room code
+   - Click "Join Quiz"
 
-## How can I deploy this project?
+3. **Host Controls**:
+   - Upload questions (CSV or JSON format)
+   - Start the quiz when all participants have joined
+   - View progress and control the flow of questions
 
-Simply open [Lovable](https://lovable.dev/projects/5ae9b5f9-8116-455f-b395-701ca5f4ab37) and click on Share -> Publish.
+4. **Playing the Quiz**:
+   - Answer questions within the 12-second time limit
+   - View the leaderboard to see your ranking
+   - See final results and statistics at the end
 
-## Can I connect a custom domain to my Lovable project?
+## Deployment
 
-Yes, you can!
+This project can be deployed on Vercel:
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+```bash
+npm install -g vercel
+vercel --prod
+```
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+## License
+
+MIT
+
+## Acknowledgments
+
+- Built with React, TypeScript, and Socket.io
+- UI components powered by ShadCN UI
